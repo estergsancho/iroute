@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% block content %}
+{% if errorMsg %}
+<div class="alert alert-danger" role="alert">
+    {{errorMsg}}. Por favor, vuelva a intentarlo
+</div>
+{% endif %}
+<div class="box bblue">
+    <h1 style="text-align: center;"> Registro de un nuevo usuario</h1>
+    <form action="/iroute/reg/" method="POST">
+        {% csrf_token %}
+        {{ formulario.non_field_errors }}
+        <div class="box bblue form" >
+            <div class="row" >
+                <div class="col">
+                    <div class="col mb-3">
+                        {{ formulario.nombre.errors }}
+                        <label class="form-label" for="{{ formulario.nombre.id_for_label }}">Nombre:</label>
+                        {{ formulario.nombre }}
+                    </div>
+                </div>
+                    <div class="col mb-3">
+                        {{ formulario.apellidos.errors }}
+                        <label class="form-label" for="{{ formulario.apellidos.id_for_label }}">Apellidos:</label>
+                        {{ formulario.apellidos }}
+                    </div>
+                
+                
+            </div>
+            <div class="row" >
+                <div class="mb-3">
+                    {{ formulario.nombreUser.errors }}
+                    <label class="form-label" for="{{ formulario.nombreUser.id_for_label }}">Nombre Usuario:</label>
+                    {{ formulario.nombreUser }}
+                </div>
+            </div>
+            <div class="row" >
+                <div class="mb-3">
+                    {{ formulario.dni.errors }}
+                    <label class="form-label" for="{{ formulario.dni.id_for_label }}">DNI:</label>
+                    {{ formulario.dni }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <div class="mb-3">
+                        {{ formulario.password.errors }}
+                        <label class="form-label" for="{{ formulario.password.id_for_label }}">Contraseña:</label>
+                        {{ formulario.password }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <button type="submit" class="btn btn-primary">Registrar</button>
+                </div>
+            </div>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}

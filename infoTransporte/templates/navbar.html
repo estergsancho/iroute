@@ -1,0 +1,39 @@
+{% load static %}
+<nav class="navbar navbar-expand-lg navbar-light">
+  <a class="navbar-brand m-3" href="/">
+    <img src="{% static 'logo.png'%}" height="50px" style="margin:1%;" alt="Logo">
+  </a>
+
+  <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-menu" aria-controls="navbar-menu" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+
+  <div class="collapse navbar-collapse" id="navbar-menu">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item">
+        <a class="nav-link" href="/iroute/map/">Map</a>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link" href="/iroute/bicimad/">BiciMad</a>
+      </li>
+
+      {% if not user.is_authenticated %}
+      <li class="nav-item">
+        <a class="nav-link" href="/iroute/login/">Login</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/iroute/reg/">New User</a>
+      </li>
+      {% else %}
+        <li class="nav-item">
+          <a class="nav-link" href="/iroute/logout/">Logout&nbsp;({{user.username}})</a>
+        </li>
+        {% endif %}
+        <li class="nav-item">
+          <a class="nav-link"  target="_blank" style="color:#fd0000">Administrar sitio web</a>
+        </li>
+    </ul>
+  </div>
+</nav>
