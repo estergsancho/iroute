@@ -1,0 +1,28 @@
+<!-- myapp/templates/bicimad_realtime.html -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Información en Tiempo Real de Bicimad</title>
+</head>
+<body>
+    {% extends 'base.html' %}
+
+    {% block title %}Mapa con Ruta en OpenStreetMap{% endblock %}
+    
+    {% block content %}
+    <h1>Información en Tiempo Real de Bicimad</h1>
+    {% if bicimad_data.error %}
+        <p>Error al obtener datos: {{ bicimad_data.error }}</p>
+    {% else %}
+        <ul>
+            {% for bike in bicimad_data %}
+                <li>Bicicleta ID: {{ bike.id }}, Latitud: {{ bike.latitude }}, Longitud: {{ bike.longitude }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+    {% endblock %}
+</body>
+</html>
+

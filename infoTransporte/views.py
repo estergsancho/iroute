@@ -50,6 +50,23 @@ def route(request):
 def map(request):
     return render(request,'map.html')
 
+def bicimad_map(request):
+    api_url = "https://rbdata.emtmadrid.es:8443/BiciMad/v1/getBiciMAD.svc/GetBikes"
+    api_key = "YOUR_API_KEY"
+
+    headers = {
+        'Content-Type': 'application/json',
+        'Authorization': f'Bearer {api_key}'
+    }
+    try:
+        response = request.get(api_url, headers=headers)
+        data = response.json()
+    except request.exceptions.RequestException as e:
+        data = {'error': str(e)}
+
+    return render(request, 'bicimad_map.html', {'bicimad_data': data})
+
+
 def bicimad(request):
     return render(request, 'bicimad.html')
 
