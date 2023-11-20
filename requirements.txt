@@ -1,0 +1,7 @@
+django
+sklearn
+matplotlib
+numpy
+joblib
+joblibosmnx
+networkx

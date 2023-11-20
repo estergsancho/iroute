@@ -9,7 +9,7 @@ from django.urls import reverse_lazy, reverse
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.models import User
 from django.contrib.auth.models import Group
-
+from .model_func import prediction
 
 cliente, creado = Group.objects.get_or_create(name='cliente')
 

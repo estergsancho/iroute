@@ -1,0 +1,10 @@
+{
+    "nodes": {
+      "A": {"lat": 40.4168, "lon": -3.7038},
+      "B": {"lat": 40.4152, "lon": -3.7067}
+    },
+    "edges": [
+      {"start": "A", "end": "B", "transport": "bus", "time": 5}
+    ]
+  }
+  
