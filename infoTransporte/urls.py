@@ -26,5 +26,6 @@ urlpatterns = [
     path('logout/',views.logOut, name='logOut'),
     path('reg/',views.regCliente, name='register'),
     path('map/',views.map, name='map'),
+    path('route/',views.route, name='route'),
     path('bicimad/', views.bicimad, name = 'bicimad')
 ]

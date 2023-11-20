@@ -44,8 +44,11 @@ def logOut( request ):
     return redirect ('welcome')
 
 
+def route(request):
+    return render(request, 'route.html')
+
 def map(request):
-    return render(request, 'interactivemap.html')
+    return render(request,'map.html')
 
 def bicimad(request):
     return render(request, 'bicimad.html')
