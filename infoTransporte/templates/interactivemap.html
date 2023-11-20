@@ -3,96 +3,107 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ruta con Puntos</title>
+  <title>Route planner</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-  <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.css" />
-  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-  <script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.js"></script>
 </head>
 <body>
-  {% include 'navbar.html' %}
-  <div id="map" style="height: 400px;"></div>
 
-  <form id="locationForm">
-    <label for="address">Dirección del Destino:</label>
-    <input type="text" id="address" name="address" placeholder="Ingrese la dirección del destino">
+  {% extends 'base.html' %}
 
-    <button type="button" onclick="calculateRoute()">Calcular Ruta</button>
-  </form>
-
-  <div id="pointsMenu">
-    <h2>Puntos en la Ruta</h2>
-    <ul id="waypointsList"></ul>
-    <button type="button" onclick="addWaypoint()">Agregar Punto</button>
-    <button type="button" onclick="removeLastWaypoint()">Quitar Último Punto</button>
-  </div>
-
-  <script>
-    var map = L.map('map').setView([40.4168, -3.7038], 13); // Madrid
-
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '© OpenStreetMap contributors'
-    }).addTo(map);
-
-    var control = L.Routing.control({
-      waypoints: [
-        L.latLng(40.4168, -3.7038)  // Madrid (punto de partida)
-      ],
-      routeWhileDragging: true
-    }).addTo(map);
-
-    var waypointsList = document.getElementById('waypointsList');
-
-    control.on('waypointschanged', function(event) {
-      updateWaypointsList(event.waypoints);
-    });
-
-    function updateWaypointsList(waypoints) {
-      waypointsList.innerHTML = '';
-      waypoints.forEach(function(waypoint, index) {
-        var listItem = document.createElement('li');
-        listItem.textContent = `Punto ${index + 1}: Latitud ${waypoint.latLng.lat.toFixed(6)}, Longitud ${waypoint.latLng.lng.toFixed(6)}`;
-        waypointsList.appendChild(listItem);
+  {% block title %}Mapa con Ruta en OpenStreetMap{% endblock %}
+  
+  {% block content %}
+    <div id="map"></div>
+  
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.js"></script>
+    
+    <style>
+      #map {
+        height: 600px;
+        margin: 20px;
+      }
+  
+      #routeForm {
+        margin-top: 10px;
+      }
+  
+      #routeInstructions {
+        margin-top: 10px;
+      }
+    </style>
+  
+    <div id="routeForm">
+      <label for="start">Punto de Partida:</label>
+      <input type="text" id="start" placeholder="Ingrese el punto de partida">
+  
+      <label for="destination">Destino:</label>
+      <input type="text" id="destination" placeholder="Ingrese el destino">
+  
+      <button type="button" onclick="calculateRoute()">Establecer Ruta</button>
+    </div>
+  
+    <div id="routeInstructions"></div>
+  
+    <script>
+      var map = L.map('map').setView([40.7128, -74.0060], 12);
+      
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+      }).addTo(map);
+  
+      var control = L.Routing.control({
+        waypoints: [
+          L.latLng(40.7128, -74.0060)  // Punto de partida (Nueva York) por defecto
+        ],
+        routeWhileDragging: true
+      }).addTo(map);
+  
+      var routeInstructions = L.control({
+        position: 'bottom'
       });
-    }
-
-    function calculateRoute() {
-      var address = document.getElementById('address').value;
-
-      // Utilizar el servicio de geocodificación de Nominatim
-      fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}`)
-        .then(response => response.json())
-        .then(data => {
-          if (data.length > 0) {
-            var result = data[0];
-            var latitude = result.lat;
-            var longitude = result.lon;
-
-            // Actualizar el destino y recalcular la ruta
-            control.setWaypoints([
-              L.latLng(40.4168, -3.7038),  // Madrid (punto de partida)
-              L.latLng(latitude, longitude)  // Nuevo punto de destino
-            ]);
-          } else {
-            alert('Dirección no encontrada. Por favor, ingrese una dirección válida.');
-          }
-        })
-        .catch(error => {
-          console.error('Error en la geocodificación:', error);
-        });
-    }
-
-    function addWaypoint() {
-      var waypoints = control.getWaypoints();
-      waypoints.push(L.latLng(40.0, -4.0));  // Agregar un punto de ejemplo (puedes personalizar las coordenadas)
-      control.setWaypoints(waypoints);
-    }
-
-    function removeLastWaypoint() {
-      var waypoints = control.getWaypoints();
-      waypoints.pop();  // Quitar el último punto
-      control.setWaypoints(waypoints);
-    }
-  </script>
+  
+      routeInstructions.onAdd = function(map) {
+        var container = L.DomUtil.create('div', 'leaflet-bar');
+        container.id = 'routeInstructions';
+        return container;
+      };
+  
+      routeInstructions.addTo(map);
+  
+      function calculateRoute() {
+        var start = document.getElementById('start').value;
+        var destination = document.getElementById('destination').value;
+  
+        fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(start)}`)
+          .then(response => response.json())
+          .then(startData => {
+            if (startData.length > 0) {
+              var startLatLng = L.latLng(startData[0].lat, startData[0].lon);
+  
+              fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(destination)}`)
+                .then(response => response.json())
+                .then(destinationData => {
+                  if (destinationData.length > 0) {
+                    var destinationLatLng = L.latLng(destinationData[0].lat, destinationData[0].lon);
+                    control.setWaypoints([startLatLng, destinationLatLng]);
+                  } else {
+                    alert('Destino no encontrado. Por favor, ingrese un destino válido.');
+                  }
+                })
+                .catch(error => {
+                  console.error('Error en la geocodificación del destino:', error);
+                });
+            } else {
+              alert('Punto de partida no encontrado. Por favor, ingrese un punto de partida válido.');
+            }
+          })
+          .catch(error => {
+            console.error('Error en la geocodificación del punto de partida:', error);
+          });
+      }
+    </script>
+  {% endblock %}
+  
 </body>
 </html>
